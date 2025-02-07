@@ -1,7 +1,7 @@
 module Api
   module V1
     class Appuser < Grape::API
-      include API::V1::Defaults
+      include Api::V1::Defaults
 
       resource :allCategories do
         before { api_params }

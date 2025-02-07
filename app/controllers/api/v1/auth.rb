@@ -1,7 +1,7 @@
 module Api
   module V1
     class Auth < Grape::API
-      include API::V1::Defaults
+      include Api::V1::Defaults
 
       resource :userSignup do
         before { api_params }
