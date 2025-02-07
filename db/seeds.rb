@@ -1,0 +1,2 @@
+AppConfig.create(signup_bonus: 5, phn1: "+91 9817850944", phn2: "+91 8685815676", tel1: "RROWNER01", tel2: "RROWNER02", banner_image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7037800.jpg&f=1&nofb=1&ipt=c37ecf04c22aff302c62c40c5eca2ce79581a69822f39eb08caa4a14c1b1c317&ipo=images")
+Admin.create!(email: "rrofficial2025@example.com", password: "rr.admins@2025", password_confirmation: "rr.admins@2025")

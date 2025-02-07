@@ -1,0 +1,85 @@
+---
+engine_version: 0.4.34
+file_version: 2025-02-07 17:00:38.323602000 Z
+resources:
+  - name: admin
+    preferences: {}
+    updated_at: 2025-02-07 17:00:38.323602000 +00:00
+  - name: category
+    preferences:
+      scopes:
+        - name: unpublished
+          display_name: Unpublished
+          scope_type: filter
+          preferences:
+            filter:
+              - published:
+                  neq: true
+            sort:
+              key: created_at
+              order: desc
+      tabs:
+        - visible: false
+          name: notes
+      icon: layout-dashboard
+    updated_at: 2025-02-07 17:00:07.263777000 +00:00
+  - name: match
+    preferences:
+      icon: device-gamepad-2
+    updated_at: 2025-02-07 17:00:15.936348000 +00:00
+  - name: player
+    preferences:
+      icon: users
+    updated_at: 2025-02-07 17:00:23.852280000 +00:00
+  - name: redeem
+    preferences:
+      icon: coin
+    updated_at: 2025-02-07 17:00:28.520616000 +00:00
+  - name: user
+    preferences:
+      scopes:
+        - name: banned
+          display_name: Banned
+          scope_type: filter
+          preferences:
+            filter:
+              - is_banned:
+                  eq: true
+            sort:
+              key: created_at
+              order: desc
+    updated_at: 2025-02-07 16:49:50.822312000 +00:00
+configs:
+  - key: header.links
+    value:
+      - name: Reports
+        link_type: reports
+      - conditions: []
+        type: header
+        name: Forms
+        link_type: forms
+    updated_at: 2025-02-07 16:50:28.484421000 +00:00
+  - key: homepage.layout
+    value: []
+    updated_at: 2025-02-07 16:59:18.310584000 +00:00
+  - key: resources.order
+    value:
+      - user
+      - category
+      - match
+      - player
+      - redeem
+      - admin
+      - app_config
+    updated_at: 2025-02-07 16:45:45.914892000 +00:00
+queries: []
+dashboards: []
+forms: []
+alerts: []
+api_configs:
+  - id: 1
+    name: origin
+    url: "/"
+    preferences: {}
+    description:
+    updated_at: 2025-02-07 16:37:19.955912000 +00:00
