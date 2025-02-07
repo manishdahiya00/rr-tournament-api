@@ -1,4 +1,4 @@
-module API
+module Api
   module V1
     class Appuser < Grape::API
       include API::V1::Defaults

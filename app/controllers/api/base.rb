@@ -1,6 +1,6 @@
-module API
+module Api
   class Base < Grape::API
-    mount API::V1::Auth
-    mount API::V1::Appuser
+    mount Api::V1::Auth
+    mount Api::V1::Appuser
   end
 end

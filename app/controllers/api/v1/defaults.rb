@@ -1,4 +1,4 @@
-module API
+module Api
   module V1
     module Defaults
       extend Grape::API::Helpers
