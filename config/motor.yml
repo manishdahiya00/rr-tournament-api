@@ -1,85 +1,185 @@
 ---
 engine_version: 0.4.34
-file_version: 2025-02-07 17:00:38.323602000 Z
+file_version: 2025-02-08 02:47:18.381294000 Z
 resources:
-  - name: admin
-    preferences: {}
-    updated_at: 2025-02-07 17:00:38.323602000 +00:00
-  - name: category
-    preferences:
-      scopes:
-        - name: unpublished
-          display_name: Unpublished
-          scope_type: filter
-          preferences:
-            filter:
-              - published:
-                  neq: true
-            sort:
-              key: created_at
-              order: desc
-      tabs:
-        - visible: false
-          name: notes
-      icon: layout-dashboard
-    updated_at: 2025-02-07 17:00:07.263777000 +00:00
-  - name: match
-    preferences:
-      icon: device-gamepad-2
-    updated_at: 2025-02-07 17:00:15.936348000 +00:00
-  - name: player
-    preferences:
-      icon: users
-    updated_at: 2025-02-07 17:00:23.852280000 +00:00
-  - name: redeem
-    preferences:
-      icon: coin
-    updated_at: 2025-02-07 17:00:28.520616000 +00:00
-  - name: user
-    preferences:
-      scopes:
-        - name: banned
-          display_name: Banned
-          scope_type: filter
-          preferences:
-            filter:
-              - is_banned:
-                  eq: true
-            sort:
-              key: created_at
-              order: desc
-    updated_at: 2025-02-07 16:49:50.822312000 +00:00
+- name: admin
+  preferences: {}
+  updated_at: 2025-02-07 17:00:38.323602000 +00:00
+- name: category
+  preferences:
+    scopes:
+    - name: unpublished
+      display_name: Unpublished
+      scope_type: filter
+      preferences:
+        filter:
+        - published:
+            neq: true
+        sort:
+          key: created_at
+          order: desc
+    tabs:
+    - visible: false
+      name: notes
+    icon: layout-dashboard
+  updated_at: 2025-02-07 17:00:07.263777000 +00:00
+- name: match
+  preferences:
+    icon: device-gamepad-2
+    columns:
+    - reference:
+        name: category
+        display_name: Category
+        model_name: category
+        reference_type: belongs_to
+        foreign_key: category_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      name: category_id
+    - column_type: select
+      default_value: upcoming
+      format:
+        select_query_id: 6
+      name: status
+  updated_at: 2025-02-08 02:47:18.381294000 +00:00
+- name: player
+  preferences:
+    icon: users
+  updated_at: 2025-02-07 17:00:23.852280000 +00:00
+- name: redeem
+  preferences:
+    icon: coin
+  updated_at: 2025-02-07 17:00:28.520616000 +00:00
+- name: user
+  preferences:
+    scopes:
+    - name: banned
+      display_name: Banned
+      scope_type: filter
+      preferences:
+        filter:
+        - is_banned:
+            eq: true
+        sort:
+          key: created_at
+          order: desc
+    columns:
+    - access_type: hidden
+      name: password_digest
+    tabs:
+    - visible: false
+      name: notes
+  updated_at: 2025-02-08 02:40:48.964520000 +00:00
 configs:
-  - key: header.links
-    value:
-      - name: Reports
-        link_type: reports
-      - conditions: []
-        type: header
-        name: Forms
-        link_type: forms
-    updated_at: 2025-02-07 16:50:28.484421000 +00:00
-  - key: homepage.layout
-    value: []
-    updated_at: 2025-02-07 16:59:18.310584000 +00:00
-  - key: resources.order
-    value:
-      - user
-      - category
-      - match
-      - player
-      - redeem
-      - admin
-      - app_config
-    updated_at: 2025-02-07 16:45:45.914892000 +00:00
-queries: []
+- key: header.links
+  value:
+  - conditions: []
+    type: header
+    name: Reports
+    link_type: reports
+  - name: Forms
+    link_type: forms
+  updated_at: 2025-02-08 02:39:23.315038000 +00:00
+- key: homepage.layout
+  value: []
+  updated_at: 2025-02-07 16:59:18.310584000 +00:00
+- key: resources.order
+  value:
+  - user
+  - category
+  - match
+  - player
+  - redeem
+  - admin
+  - app_config
+  updated_at: 2025-02-07 18:43:25.531504000 +00:00
+queries:
+- id: 1
+  name: Users Count
+  sql_body: Select count(*) from user;
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:36:53.640416000 +00:00
+- id: 2
+  name: Category Count
+  sql_body: Select count(*) from categories;
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:37:30.998331000 +00:00
+- id: 3
+  name: Matches Count
+  sql_body: Select count(*) from matches;
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:37:41.370217000 +00:00
+- id: 4
+  name: Redeems Count
+  sql_body: Select count(*) from redeems;
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:38:04.654263000 +00:00
+- id: 5
+  name: Admins Count
+  sql_body: Select count(*) from admins;
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:38:16.414463000 +00:00
+- id: 6
+  name: Match Status
+  sql_body: |
+    SELECT 'live' AS status
+    UNION
+    SELECT 'upcoming'
+    UNION
+    SELECT 'completed';
+  description:
+  preferences:
+    query_type: sql
+    database: primary
+    visualization: table
+    visualization_options: {}
+    variables: []
+  tags: []
+  updated_at: 2025-02-08 02:46:58.936414000 +00:00
 dashboards: []
 forms: []
 alerts: []
 api_configs:
-  - id: 1
-    name: origin
-    url: "/"
-    preferences: {}
-    description:
-    updated_at: 2025-02-07 16:37:19.955912000 +00:00
+- id: 1
+  name: origin
+  url: "/"
+  preferences: {}
+  description:
+  updated_at: 2025-02-07 18:11:03.586991000 +00:00

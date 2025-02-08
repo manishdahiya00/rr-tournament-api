@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_07_164216) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_08_023359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -62,6 +62,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_164216) do
     t.text "rules"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "room_id"
+    t.string "room_pass"
   end
 
   create_table "motor_alert_locks", force: :cascade do |t|

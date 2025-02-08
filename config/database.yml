@@ -18,11 +18,13 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: defaultdb
+  # database: defaultdb
   # username: avnadmin
   # password: AVNS_LnITpexzlVwikK41buo
   # url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
   # port: 28716
+  database: defaultdb
+  url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
 
 development:
   <<: *default
