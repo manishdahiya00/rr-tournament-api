@@ -66,7 +66,8 @@ module Api
             user = valid_user(params[:userId], params[:securityToken])
             return { status: 500, message: "Invalid Session" } unless user.present?
             source_ip = request.ip
-            { status: 200, message: MSG_SUCCESS, walletBalance: user.wallet_balance, name: user.name, email: user.email, phn1: AppConfig.first.phn1, phn2: AppConfig.first.phn2, tel1: AppConfig.first.tel1, tel2: AppConfig.first.tel2, bannerImage: AppConfig.first.banner_image }
+            { status: 500, message: "Server On Maintainance" }
+            # { status: 200, message: MSG_SUCCESS, walletBalance: user.wallet_balance, name: user.name, email: user.email, phn1: AppConfig.first.phn1, phn2: AppConfig.first.phn2, tel1: AppConfig.first.tel1, tel2: AppConfig.first.tel2, bannerImage: AppConfig.first.banner_image }
           rescue Exception => e
             Rails.logger.info "API Exception-#{Time.now}-appOpen-#{params.inspect}-Error-#{e}"
             { status: 500, message: MSG_ERROR }
