@@ -47,7 +47,8 @@ module Api
             if user.is_banned
               return { status: 500, message: "You are banned from using application." }
             end
-            { status: 200, message: "Signed In Successfully", userId: user.id, securityToken: user.security_token, walletBalance: user.wallet_balance, name: user.name, email: user.email }
+            # { status: 200, message: "Signed In Successfully", userId: user.id, securityToken: user.security_token, walletBalance: user.wallet_balance, name: user.name, email: user.email }
+            { status: 500, message: "Server Under Maintainance" }
           rescue Exception => e
             Rails.logger.info "API Exception-#{Time.now}-userSignUp-#{params.inspect}-Error-#{e}"
             { status: 500, message: MSG_ERROR }
