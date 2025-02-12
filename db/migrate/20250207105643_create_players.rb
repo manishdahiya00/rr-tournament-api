@@ -6,7 +6,7 @@ class CreatePlayers < ActiveRecord::Migration[8.0]
       t.string :uid
       t.string :username
       t.string :match_id
-
+      t.string :slot_no
       t.timestamps
     end
   end

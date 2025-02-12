@@ -7,6 +7,9 @@ class CreateAppConfigs < ActiveRecord::Migration[8.0]
       t.string :tel2
       t.string :banner_image
       t.integer :signup_bonus
+      t.integer :refer_bonus
+      t.string :version
+      t.string :update_url
 
       t.timestamps
     end

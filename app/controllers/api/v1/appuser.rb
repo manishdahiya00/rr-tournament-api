@@ -14,7 +14,16 @@ module Api
             user = valid_user(params[:userId], params[:securityToken])
             return { status: 500, message: INVALID_SESSION } unless user.present?
             categories = []
+            # player = Player.find_by(user_id: user.id)
+            # is_match_joined = false
             Category.published.limit(20).each do |category|
+              # if player
+              #   category.matches.where(status: "upcoming").each do |match|
+              #     if match.id == player.match_id
+              #       is_match_joined = true
+              #     end
+              #   end
+              # end
               categories << category
             end
             { status: 200, message: MSG_SUCCESS, categories: categories || [], walletBalance: user.wallet_balance }
@@ -122,27 +131,49 @@ module Api
           requires :uid, type: String
           requires :username, type: String
         end
+
         post do
           begin
             user = valid_user(params[:userId], params[:securityToken])
             return { status: 500, message: INVALID_SESSION } unless user.present?
-            match = Match.find(params[:matchId])
-            if !match
-              return { status: 500, message: "Match not found" }
+
+            match = Match.find_by(id: params[:matchId])
+            return { status: 500, message: "Match not found" } unless match
+
+            existing_player = Player.find_by(match_id: match.id, user_id: user.id)
+            return { status: 500, message: "Already Joined the Team" } if existing_player
+
+            return { status: 500, message: "Insufficient Funds!" } if user.wallet_balance < match.entry_fee
+
+            ActiveRecord::Base.transaction do
+              match.lock!
+
+              assigned_slots = match.players.pluck(:slot_no).compact.uniq.map(&:to_i)
+
+              total_slots = (1..match.total_slots).to_a
+              available_slots = total_slots - assigned_slots
+
+              return { status: 500, message: "No slots available!" } if available_slots.empty?
+
+              slot_no = available_slots.sample
+
+              user.update!(wallet_balance: user.wallet_balance - match.entry_fee)
+              match.update!(slots_left: match.slots_left - 1)
+
+              match.players.create!(
+                user_id: user.id,
+                name: "#{params[:name]}",
+                uid: params[:uid],
+                username: params[:username],
+                slot_no: slot_no,
+              )
+
+              { status: 200, message: "Joined Team Successfully", walletBalance: user.wallet_balance }
             end
-            existingPlayer = Player.find_by(match_id: match.id, user_id: user.id)
-            if existingPlayer
-              return { status: 500, message: "Already Joined the Team" }
-            end
-            if user.wallet_balance < match.entry_fee
-              return { status: 500, message: "Insufficient Funds!" }
-            end
-            newBalance = user.wallet_balance - match.entry_fee
-            user.update(wallet_balance: newBalance)
-            match.update(slots_left: match.slots_left - 1)
-            match.players.create(user_id: user.id, name: params[:name], uid: params[:uid], username: params[:username])
-            { status: 200, message: "Joined Team Successfully", walletBalance: newBalance }
-          rescue Exception => e
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.info "Database Error-#{Time.now}-joinTeam-#{params.inspect}-Error-#{e}"
+            { status: 500, message: "Database error. Please try again." }
+          rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-joinTeam-#{params.inspect}-Error-#{e}"
             { status: 500, message: MSG_ERROR }
           end

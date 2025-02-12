@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_08_023359) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_12_131710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -34,6 +34,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_08_023359) do
     t.string "tel2"
     t.string "banner_image"
     t.integer "signup_bonus"
+    t.integer "refer_bonus"
+    t.string "version"
+    t.string "update_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -265,6 +268,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_08_023359) do
     t.string "uid"
     t.string "username"
     t.string "match_id"
+    t.string "slot_no"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -274,20 +278,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_08_023359) do
     t.string "upi_id"
     t.integer "amount"
     t.string "user_id"
+    t.boolean "paid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "phone"
+    t.string "otp"
     t.string "security_token"
     t.integer "wallet_balance"
     t.boolean "is_banned", default: false
     t.string "source_ip"
+    t.string "version_name"
+    t.string "version_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "refer_code", default: ""
+    t.string "referral_code", default: ""
   end
 
   add_foreign_key "motor_alert_locks", "motor_alerts", column: "alert_id"

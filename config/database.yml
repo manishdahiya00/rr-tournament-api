@@ -23,12 +23,21 @@ default: &default
   # password: AVNS_LnITpexzlVwikK41buo
   # url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
   # port: 28716
-  database: defaultdb
-  url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
+  # database: defaultdb
+  # url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
+  database: api_development
+  host: localhost
+  # port: 5432
+  username: root
+  password: 2009060944
 
 development:
   <<: *default
   database: api_development
+  # host: localhost
+  # port: 5432
+  # username: root
+  # password: 2009060944
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.

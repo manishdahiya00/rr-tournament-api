@@ -1,6 +1,6 @@
 ---
 engine_version: 0.4.34
-file_version: 2025-02-08 02:47:18.381294000 Z
+file_version: 2025-02-12 12:51:44.126881000 Z
 resources:
 - name: admin
   preferences: {}
@@ -43,7 +43,9 @@ resources:
       format:
         select_query_id: 6
       name: status
-  updated_at: 2025-02-08 02:47:18.381294000 +00:00
+    - column_type: textarea
+      name: rules
+  updated_at: 2025-02-12 12:51:44.126881000 +00:00
 - name: player
   preferences:
     icon: users
@@ -75,13 +77,9 @@ resources:
 configs:
 - key: header.links
   value:
-  - conditions: []
-    type: header
-    name: Reports
-    link_type: reports
-  - name: Forms
-    link_type: forms
-  updated_at: 2025-02-08 02:39:23.315038000 +00:00
+  - name: "⭐ Star on GitHub"
+    path: https://github.com/motor-admin/motor-admin-rails
+  updated_at: 2025-02-11 17:42:01.841749000 +00:00
 - key: homepage.layout
   value: []
   updated_at: 2025-02-07 16:59:18.310584000 +00:00
@@ -182,4 +180,4 @@ api_configs:
   url: "/"
   preferences: {}
   description:
-  updated_at: 2025-02-07 18:11:03.586991000 +00:00
+  updated_at: 2025-02-11 17:42:01.864338000 +00:00

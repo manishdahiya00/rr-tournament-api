@@ -5,6 +5,7 @@ class CreateRedeems < ActiveRecord::Migration[8.0]
       t.string :upi_id
       t.integer :amount
       t.string :user_id
+      t.boolean :paid
 
       t.timestamps
     end
