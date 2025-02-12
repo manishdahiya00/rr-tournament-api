@@ -56,7 +56,7 @@ group :development do
   gem "web-console"
 end
 
-gem "grape", "~> 2.2"
+gem "grape", "~> 2.3"
 
 gem "motor-admin", "~> 0.4.34"
 
