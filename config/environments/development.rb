@@ -24,7 +24,15 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = false
   end
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: "rrofficial2025@gmail.com",
+    password: "your_password",
+    authentication: "plain",
+    enable_starttls_auto: true,
+  }
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
@@ -36,9 +44,6 @@ Rails.application.configure do
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
-
-  # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

@@ -156,18 +156,17 @@ module Api
               return { status: 500, message: "No slots available!" } if available_slots.empty?
 
               slot_no = available_slots.sample
-
               user.update!(wallet_balance: user.wallet_balance - match.entry_fee)
               match.update!(slots_left: match.slots_left - 1)
 
-              match.players.create!(
+              player = match.players.create!(
                 user_id: user.id,
                 name: "#{params[:name]}",
                 uid: params[:uid],
                 username: params[:username],
                 slot_no: slot_no,
               )
-
+              user.user_matches.create(match_id: match.id, player_id: player.id)
               { status: 200, message: "Joined Team Successfully", walletBalance: user.wallet_balance }
             end
           rescue ActiveRecord::RecordInvalid => e
@@ -199,6 +198,51 @@ module Api
             { status: 200, message: "Redeem Request Submitted Successfully" }
           rescue Exception => e
             Rails.logger.info "API Exception-#{Time.now}-joinTeam-#{params.inspect}-Error-#{e}"
+            { status: 500, message: MSG_ERROR }
+          end
+        end
+      end
+      resource :appBanners do
+        before { api_params }
+
+        params do
+          use :common_params
+        end
+        post do
+          begin
+            user = valid_user(params[:userId], params[:securityToken])
+            return { status: 500, message: INVALID_SESSION } unless user.present?
+            app_banners = []
+            AppBanner.active.each do |app_banner|
+              app_banners << app_banner
+            end
+            { status: 200, message: MSG_SUCCESS, appBanners: app_banners }
+          rescue Exception => e
+            Rails.logger.info "API Exception-#{Time.now}-appBanners-#{params.inspect}-Error-#{e}"
+            { status: 500, message: MSG_ERROR }
+          end
+        end
+      end
+      resource :userMatches do
+        before { api_params }
+
+        params do
+          use :common_params
+        end
+        post do
+          begin
+            user = valid_user(params[:userId], params[:securityToken])
+            return { status: 500, message: INVALID_SESSION } unless user.present?
+            matches = []
+            UserMatch.all().order(created_at: :desc).limit(20).each do |user_match|
+              matches << {
+                match: user_match.match,
+                player: user_match.player,
+              }
+            end
+            { status: 200, message: MSG_SUCCESS, matches: matches || [] }
+          rescue Exception => e
+            Rails.logger.info "API Exception-#{Time.now}-upcomingMatches-#{params.inspect}-Error-#{e}"
             { status: 500, message: MSG_ERROR }
           end
         end

@@ -5,28 +5,25 @@ module Api
 
       helpers do
         def send_otp(phone, otp)
-          account_sid = "AC1313e2357a15abf117fedb028658ebd7"
-          auth_token = "82beaffc0faf9924984a35f3085ab1c6"
+          # account_sid = "AC1313e2357a15abf117fedb028658ebd7"
+          # auth_token = "82beaffc0faf9924984a35f3085ab1c6"
 
           begin
-            client = Twilio::REST::Client.new(account_sid, auth_token)
+            # client = Twilio::REST::Client.new(account_sid, auth_token)
 
-            lookup = client.lookups.v2.phone_numbers("+91#{phone}").fetch()
-            return { status: 500, message: "Invalid phone number. Please enter a valid number." } unless lookup&.valid
+            # lookup = client.lookups.v2.phone_numbers("+91#{phone}").fetch()
+            # return { status: 500, message: "Invalid phone number. Please enter a valid number." } unless lookup&.valid
 
-            client.messages.create(
-              body: "Your OTP for RR Official is #{otp}",
-              to: "+91#{phone}",
-              from: "+15076937451",
-            )
-
+            # client.messages.create(
+            #   body: "Your OTP for RR Official is #{otp}",
+            #   to: "+91#{phone}",
+            #   from: "+15076937451",
+            # )
+            UserMailer.otp_email(@user, otp).deliver_now
             { status: 200, message: "OTP Sent Successfully" }
-          rescue Twilio::REST::RestError => e
-            Rails.logger.info "Twilio Error: #{e.message}"
-            { status: 500, message: "Invalid phone number. Please enter a valid number." }
           rescue StandardError => e
             Rails.logger.info "Send OTP Exception: #{e.message}"
-            { status: 500, message: "Something went wrong: #{e.message}" }
+            { status: 500, message: "Something went wrong" }
           end
         end
       end
@@ -76,7 +73,7 @@ module Api
             otp_response.merge(userId: user.id, securityToken: user.security_token, referCode: user.refer_code)
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-auth-#{params.inspect}-Error-#{e}"
-            { status: 500, message: "Something went wrong, please try again." }
+            { status: 500, message: "Server under maintainance" }
           end
         end
       end
@@ -114,7 +111,7 @@ module Api
           end
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-verifyOtp-#{params.inspect}-Error-#{e}"
-          { status: 500, message: "Something went wrong, please try again." }
+          { status: 500, message: "Server under maintainance" }
         end
       end
 
@@ -145,7 +142,7 @@ module Api
           }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-appOpen-#{params.inspect}-Error-#{e}"
-          { status: 500, message: "Something went wrong, please try again." }
+          { status: 500, message: "Server under maintainance" }
         end
       end
     end
