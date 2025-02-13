@@ -1,0 +1,1 @@
+worker: bin/rails solid_queue:start
