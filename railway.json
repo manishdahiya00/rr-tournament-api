@@ -1,0 +1,12 @@
+{
+  "services": {
+    "web": {
+      "command": "bundle exec puma -C config/puma.rb",
+      "env": "production"
+    },
+    "worker": {
+      "command": "bundle exec rails solid_queue:work",
+      "env": "production"
+    }
+  }
+}
