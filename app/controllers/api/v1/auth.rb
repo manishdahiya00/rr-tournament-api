@@ -8,7 +8,7 @@ module Api
           return { status: 500, message: "Invalid Email" } if email.blank?
 
           begin
-            UserMailer.otp_email(email, otp).deliver_now
+            UserMailer.otp_email(email, otp).deliver_later
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
           end

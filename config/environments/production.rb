@@ -64,20 +64,11 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
-    user_name: ENV["SMTP_USERNAME"], # Use env variable
-    password: ENV["SMTP_PASSWORD"],  # Use env variable
+    user_name: "rrofficial2025@gmail.com",
+    password: "zcnr hjbg qtxj jewr",
     authentication: "plain",
+    enable_starttls_auto: true,
   }
-
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
-
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true

@@ -100,13 +100,16 @@ production:
     url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main?sslmode=require
   cache:
     <<: *primary_production
-    database: api_production_cache
+    database: main_cache
+    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_cache?sslmode=require
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: api_production_queue
+    database: main_queue
+    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_queue?sslmode=require
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: api_production_cable
+    database: main_cable
+    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_cable?sslmode=require
     migrations_paths: db/cable_migrate
