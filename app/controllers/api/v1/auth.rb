@@ -4,76 +4,84 @@ module Api
       include Api::V1::Defaults
 
       helpers do
-        def send_otp(phone, otp)
-          # account_sid = "AC1313e2357a15abf117fedb028658ebd7"
-          # auth_token = "82beaffc0faf9924984a35f3085ab1c6"
+        def send_otp(email, otp)
+          return { status: 500, message: "Invalid Email" } if email.blank?
 
-          begin
-            # client = Twilio::REST::Client.new(account_sid, auth_token)
-
-            # lookup = client.lookups.v2.phone_numbers("+91#{phone}").fetch()
-            # return { status: 500, message: "Invalid phone number. Please enter a valid number." } unless lookup&.valid
-
-            # client.messages.create(
-            #   body: "Your OTP for RR Official is #{otp}",
-            #   to: "+91#{phone}",
-            #   from: "+15076937451",
-            # )
-            UserMailer.otp_email(@user, otp).deliver_now
-            { status: 200, message: "OTP Sent Successfully" }
-          rescue StandardError => e
-            Rails.logger.info "Send OTP Exception: #{e.message}"
-            { status: 500, message: "Something went wrong" }
+          Thread.new do
+            begin
+              UserMailer.otp_email(email, otp).deliver_now
+            rescue StandardError => e
+              Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
+            end
           end
+
+          { status: 200, message: "OTP Sent Successfully" }
+        end
+
+        def rate_limit_check(ip)
+          key = "rate_limit_auth:#{ip}"
+          count = Rails.cache.read(key).to_i
+
+          if count >= 5
+            { status: 429, message: "Too many requests. Try again later." }
+          else
+            Rails.cache.write(key, count + 1, expires_in: 1.minute)
+            nil
+          end
+          nil
         end
       end
       resource :auth do
         before { api_params }
 
         params do
-          requires :phone, type: String, allow_blank: false
+          requires :email, type: String, allow_blank: false
           optional :referralCode, type: String, allow_blank: true
           requires :versionName, type: String, allow_blank: false
           requires :versionCode, type: String, allow_blank: false
         end
 
         post do
-          phone = params[:phone]
-          otp = SecureRandom.random_number(10 ** 6).to_s.rjust(6, "0")
+          return rate_limit_check(request.ip) if rate_limit_check(request.ip)
 
-          user = User.find_or_initialize_by(phone: phone)
+          email = params[:email].strip.downcase
+          return { status: 500, message: "Invalid Email" } if email.blank?
 
-          user.refer_code ||= SecureRandom.hex(4)
-
+          referral_user = nil
           if params[:referralCode].present?
             referral_user = User.find_by(refer_code: params[:referralCode])
-            return { status: 500, message: "Invalid Referral Code" } unless referral_user
 
-            return { status: 500, message: "Can't use your own referral code" } if user.refer_code == params[:referralCode]
+            if referral_user.nil?
+              return { status: 500, message: "Invalid referral code" }
+            elsif referral_user.email == email
+              return { status: 500, message: "You cannot use your own referral code" }
+            end
           end
 
-          otp_response = send_otp(phone, otp)
+          otp = SecureRandom.random_number(10 ** 6).to_s.rjust(6, "0")
+          user = User.find_or_initialize_by(email: email)
+
+          return { status: 500, message: "Your account is banned. Please contact support." } if user.is_banned?
+
+          otp_response = send_otp(email, otp)
           return otp_response if otp_response[:status] != 200
 
           begin
-            user.otp = otp
-            user.security_token ||= SecureRandom.uuid
-            user.wallet_balance ||= AppConfig.first.signup_bonus
-            user.source_ip ||= request.ip
-            user.version_name ||= params[:versionName]
-            user.version_code ||= params[:versionCode]
-
-            if params[:referralCode].present?
-              user.referral_code = params[:referralCode]
-              referral_user.update(wallet_balance: referral_user.wallet_balance + AppConfig.first.refer_bonus)
-            end
-
-            user.save!
+            user.update!(
+              otp: otp,
+              security_token: user.security_token || SecureRandom.uuid,
+              wallet_balance: user.wallet_balance || AppConfig.first.signup_bonus,
+              source_ip: user.source_ip || request.ip,
+              version_name: params[:versionName],
+              version_code: params[:versionCode],
+              refer_code: SecureRandom.hex(4),
+              referral_code: referral_user&.refer_code || nil,
+            )
 
             otp_response.merge(userId: user.id, securityToken: user.security_token, referCode: user.refer_code)
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-auth-#{params.inspect}-Error-#{e}"
-            { status: 500, message: "Server under maintainance" }
+            { status: 500, message: "Server under maintenance" }
           end
         end
       end
@@ -83,27 +91,26 @@ module Api
 
         params do
           requires :otp, type: String, allow_blank: false
-          requires :phone, type: String, allow_blank: false
+          requires :email, type: String, allow_blank: false
         end
 
         post do
-          user = User.find_by(phone: params[:phone])
+          user = User.find_by(email: params[:email])
           return { status: 500, message: "User not found" } unless user
 
           if user.otp == params[:otp]
-            user.update(otp: "")
+            user.update!(otp: "")
+
+            app_config = AppConfig.first
             {
               status: 200,
               message: "Signed In Successfully",
               userId: user.id,
               securityToken: user.security_token,
               walletBalance: user.wallet_balance,
-              phone: user.phone,
-              phn1: AppConfig.first.phn1,
-              phn2: AppConfig.first.phn2,
-              tel1: AppConfig.first.tel1,
-              tel2: AppConfig.first.tel2,
-              bannerImage: AppConfig.first.banner_image,
+              email: user.email,
+              tel1: app_config.tel1,
+              tel2: app_config.tel2,
               referCode: user.refer_code,
             }
           else
@@ -111,7 +118,7 @@ module Api
           end
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-verifyOtp-#{params.inspect}-Error-#{e}"
-          { status: 500, message: "Server under maintainance" }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -125,24 +132,25 @@ module Api
         post do
           user = valid_user(params[:userId], params[:securityToken])
           return { status: 500, message: "Invalid Session" } unless user
+          return { status: 500, message: "You are banned. Please contact support." } if user.is_banned?
 
-          {
-            status: 200,
-            message: "Success",
-            walletBalance: user.wallet_balance,
-            phone: user.phone,
-            phn1: AppConfig.first.phn1,
-            phn2: AppConfig.first.phn2,
-            tel1: AppConfig.first.tel1,
-            tel2: AppConfig.first.tel2,
-            bannerImage: AppConfig.first.banner_image,
-            referCode: user.refer_code,
-            version: AppConfig.first.version,
-            updateUrl: AppConfig.first.update_url,
-          }
-        rescue StandardError => e
-          Rails.logger.info "API Exception-#{Time.now}-appOpen-#{params.inspect}-Error-#{e}"
-          { status: 500, message: "Server under maintainance" }
+          begin
+            app_config = AppConfig.first
+            {
+              status: 200,
+              message: "Success",
+              walletBalance: user.wallet_balance,
+              email: user.email,
+              tel1: app_config.tel1,
+              tel2: app_config.tel2,
+              referCode: user.refer_code,
+              version: app_config.version,
+              updateUrl: app_config.update_url,
+            }
+          rescue StandardError => e
+            Rails.logger.info "API Exception-#{Time.now}-appOpen-#{params.inspect}-Error-#{e}"
+            { status: 500, message: "Server under maintenance" }
+          end
         end
       end
     end

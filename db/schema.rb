@@ -27,7 +27,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
-  create_table "app_banners", force: :cascade do |t|
+  create_table "app_banners", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "image_url"
     t.string "action_url"
     t.boolean "published", default: true
@@ -36,11 +36,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
   end
 
   create_table "app_configs", force: :cascade do |t|
-    t.string "phn1"
-    t.string "phn2"
     t.string "tel1"
     t.string "tel2"
-    t.string "banner_image"
     t.integer "signup_bonus"
     t.integer "refer_bonus"
     t.string "version"
@@ -73,8 +70,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.text "rules"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "room_id"
-    t.string "room_pass"
   end
 
   create_table "motor_alert_locks", force: :cascade do |t|
@@ -291,8 +286,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_matches", force: :cascade do |t|
-    t.string "user_id"
+  create_table "user_matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "userId"
     t.string "match_id"
     t.string "player_id"
     t.datetime "created_at", null: false
@@ -300,7 +295,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "phone"
+    t.string "email"
     t.string "otp"
     t.string "security_token"
     t.integer "wallet_balance"
@@ -308,10 +303,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.string "source_ip"
     t.string "version_name"
     t.string "version_code"
+    t.string "refer_code"
+    t.string "referral_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "refer_code", default: ""
-    t.string "referral_code", default: ""
   end
 
   add_foreign_key "motor_alert_locks", "motor_alerts", column: "alert_id"

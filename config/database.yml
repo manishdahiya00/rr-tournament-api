@@ -96,8 +96,8 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: defaultdb
-    url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
+    database: neondb
+    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
   cache:
     <<: *primary_production
     database: api_production_cache

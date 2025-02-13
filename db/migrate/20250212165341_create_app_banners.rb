@@ -1,6 +1,6 @@
 class CreateAppBanners < ActiveRecord::Migration[8.0]
   def change
-    create_table :app_banners do |t|
+    create_table :app_banners, id: :uuid do |t|
       t.string :image_url
       t.string :action_url
       t.boolean :published, default: true
