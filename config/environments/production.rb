@@ -40,7 +40,7 @@ Rails.application.configure do
     .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!)
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
