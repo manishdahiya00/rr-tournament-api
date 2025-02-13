@@ -12,16 +12,16 @@ module Api
           begin
             smtp = Net::SMTP.new("smtp.gmail.com", 587)
             smtp.enable_starttls
-            smtp.start("gmail.com", ENV["GMAIL_USERNAME"], ENV["GMAIL_PASSWORD"], :login) do |smtp|
+            smtp.start("gmail.com", "rrofficial2025@gmail.com", "zcnr hjbg qtxj jewr", :login) do |smtp|
               message = <<~MESSAGE
-                From: Your App <#{ENV["GMAIL_USERNAME"]}>
+                From: rrofficial2025@gmail.com
                 To: #{email}
-                Subject: Your OTP Code
+                Subject: OTP for RR Tournament
 
                 Your OTP code is: #{otp}
               MESSAGE
 
-              smtp.send_message message, ENV["GMAIL_USERNAME"], email
+              smtp.send_message message, "rrofficial2025@gmail.com", email
             end
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
