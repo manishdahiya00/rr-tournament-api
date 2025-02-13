@@ -1,3 +1,5 @@
+require "net/smtp"
+
 module Api
   module V1
     class Auth < Grape::API
@@ -8,27 +10,28 @@ module Api
           return { status: 500, message: "Invalid Email" } if email.blank?
 
           begin
-            UserMailer.otp_email(email, otp).deliver_later
+            smtp = Net::SMTP.new("smtp.gmail.com", 587)
+            smtp.enable_starttls
+            smtp.start("gmail.com", ENV["GMAIL_USERNAME"], ENV["GMAIL_PASSWORD"], :login) do |smtp|
+              message = <<~MESSAGE
+                From: Your App <#{ENV["GMAIL_USERNAME"]}>
+                To: #{email}
+                Subject: Your OTP Code
+
+                Your OTP code is: #{otp}
+              MESSAGE
+
+              smtp.send_message message, ENV["GMAIL_USERNAME"], email
+            end
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
+            return { status: 500, message: "Failed to send OTP" }
           end
 
           { status: 200, message: "OTP Sent Successfully" }
         end
-
-        def rate_limit_check(ip)
-          key = "rate_limit_auth:#{ip}"
-          count = Rails.cache.read(key).to_i
-
-          if count >= 5
-            { status: 429, message: "Too many requests. Try again later." }
-          else
-            Rails.cache.write(key, count + 1, expires_in: 1.minute)
-            nil
-          end
-          nil
-        end
       end
+
       resource :auth do
         before { api_params }
 
@@ -40,8 +43,6 @@ module Api
         end
 
         post do
-          return rate_limit_check(request.ip) if rate_limit_check(request.ip)
-
           email = params[:email].strip.downcase
           return { status: 500, message: "Invalid Email" } if email.blank?
 
