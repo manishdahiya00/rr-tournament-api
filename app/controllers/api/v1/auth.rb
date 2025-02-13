@@ -7,12 +7,10 @@ module Api
         def send_otp(email, otp)
           return { status: 500, message: "Invalid Email" } if email.blank?
 
-          Thread.new do
-            begin
-              UserMailer.otp_email(email, otp).deliver_now
-            rescue StandardError => e
-              Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
-            end
+          begin
+            UserMailer.otp_email(email, otp).deliver_now
+          rescue StandardError => e
+            Rails.logger.info "API Exception-#{Time.now}-send-otp-Error-#{e}"
           end
 
           { status: 200, message: "OTP Sent Successfully" }
