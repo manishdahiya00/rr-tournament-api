@@ -150,6 +150,59 @@ module Api
           { status: 500, message: MSG_ERROR }
         end
       end
+
+      resource :capturePayment do
+        before { api_params }
+        params do
+          use :common_params
+          requires :razorpayPaymentId, type: String
+        end
+
+        post do
+          user = fetch_user
+          # user.update(wallet_balance: user.wallet_balance + params[])
+          require "net/http"
+          require "uri"
+          require "json"
+
+          key_id = "rzp_live_PAE3MFBLHAckwG"
+          key_secret = "k2RtLSJR28erCjeKN0HFupfE"
+
+          url = URI("https://api.razorpay.com/v1/payments/#{params[:razorpayPaymentId]}/capture")
+
+          body = {
+            amount: AppConfig.first.min_deposit.to_i * 100,
+          }.to_json
+
+          http = Net::HTTP.new(url.host, url.port)
+          http.use_ssl = true
+
+          request = Net::HTTP::Post.new(url)
+          request.basic_auth(key_id, key_secret)
+          request["Content-Type"] = "application/json"
+          request.body = body
+          response = http.request(request)
+
+          if response.body["captured"]
+            url = URI("https://api.razorpay.com/v1/payments/#{params[:razorpayPaymentId]}")
+            body = {
+              amount: AppConfig.first.min_deposit.to_i * 100,
+            }.to_json
+            http = Net::HTTP.new(url.host, url.port)
+            http.use_ssl = true
+            request = Net::HTTP::Post.new(url)
+            request.basic_auth(key_id, key_secret)
+            request["Content-Type"] = "application/json"
+            request.body = body
+            response = http.request(request)
+            user.update(wallet_balance: user.wallet_balance + AppConfig.first.min_deposit.to_i)
+            { status: 200, message: "Payment Success", walletBalance: user.wallet_balance }
+          end
+        rescue StandardError => e
+          Rails.logger.info "API Exception-#{Time.now}-capturePayment-#{params.inspect}-Error-#{e}"
+          { status: 500, message: MSG_ERROR }
+        end
+      end
     end
   end
 end

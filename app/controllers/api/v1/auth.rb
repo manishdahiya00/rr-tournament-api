@@ -112,6 +112,7 @@ module Api
               tel1: app_config.tel1,
               tel2: app_config.tel2,
               referCode: user.refer_code,
+              minDeposit: app_config.min_deposit,
             }
           else
             { status: 500, message: "Invalid OTP" }
@@ -146,6 +147,7 @@ module Api
               referCode: user.refer_code,
               version: app_config.version,
               updateUrl: app_config.update_url,
+              minDeposit: app_config.min_deposit,
             }
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-appOpen-#{params.inspect}-Error-#{e}"

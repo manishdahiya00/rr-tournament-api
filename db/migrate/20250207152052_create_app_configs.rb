@@ -7,6 +7,7 @@ class CreateAppConfigs < ActiveRecord::Migration[8.0]
       t.integer :refer_bonus
       t.string :version
       t.string :update_url
+      t.string :min_deposit
 
       t.timestamps
     end

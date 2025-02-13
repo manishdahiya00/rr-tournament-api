@@ -42,6 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.integer "refer_bonus"
     t.string "version"
     t.string "update_url"
+    t.string "min_deposit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
