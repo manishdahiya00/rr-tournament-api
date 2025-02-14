@@ -5,9 +5,6 @@ module Api
 
       helpers do
         def fetch_user
-          user = valid_user(params[:userId], params[:securityToken])
-          return { status: 500, message: INVALID_SESSION } unless user
-          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           user
         end
       end
@@ -17,7 +14,9 @@ module Api
         params { use :common_params }
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           categories = Category.published.limit(20).to_a
           { status: 200, message: MSG_SUCCESS, categories: categories, walletBalance: user.wallet_balance }
         rescue StandardError => e
@@ -35,7 +34,9 @@ module Api
           end
 
           post do
-            user = fetch_user
+            user = valid_user(params[:userId], params[:securityToken])
+            return { status: 500, message: INVALID_SESSION } unless user
+            return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
             matches = Match.where(category_id: params[:categoryId]).send(state).limit(20).to_a
             { status: 200, message: MSG_SUCCESS, matches: matches, walletBalance: user.wallet_balance }
           rescue StandardError => e
@@ -53,7 +54,9 @@ module Api
         end
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           players = Player.where(match_id: params[:matchId]).to_a
           { status: 200, message: MSG_SUCCESS, players: players, walletBalance: user.wallet_balance }
         rescue StandardError => e
@@ -70,7 +73,9 @@ module Api
         end
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           match = Match.find_by(id: params[:matchId])
           return { status: 500, message: "Match not found" } if match.nil?
           return { status: 500, message: "Already Joined the Team" } if Player.exists?(match_id: match.id, user_id: user.id)
@@ -104,7 +109,9 @@ module Api
         end
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           return { status: 500, message: "Insufficient Funds!" } if user.wallet_balance < params[:amount]
 
           return { status: 500, message: "Minimum Withrawl limit is ₹100" } if params[:amount] < 100
@@ -124,7 +131,9 @@ module Api
         end
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           banners = AppBanner.active.to_a
           { status: 200, message: MSG_SUCCESS, appBanners: banners }
         rescue StandardError => e
@@ -140,7 +149,9 @@ module Api
         end
 
         post do
-          user = fetch_user
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           matches = UserMatch.includes(:match, :player).order(created_at: :desc).limit(20).map do |um|
             { match: um.match, player: um.player }
           end
@@ -159,8 +170,9 @@ module Api
         end
 
         post do
-          user = fetch_user
-          # user.update(wallet_balance: user.wallet_balance + params[])
+          user = valid_user(params[:userId], params[:securityToken])
+          return { status: 500, message: INVALID_SESSION } unless user
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           require "net/http"
           require "uri"
           require "json"

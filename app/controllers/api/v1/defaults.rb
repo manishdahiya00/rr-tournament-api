@@ -23,7 +23,7 @@ module Api
           end
 
           def valid_user(userId, securityToken)
-            user = User.find_by(id: userId, security_token: securityToken)
+            User.find_by(id: userId, security_token: securityToken)
           end
         end
       end
