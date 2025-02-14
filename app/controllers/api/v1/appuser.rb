@@ -152,7 +152,7 @@ module Api
           user = valid_user(params[:userId], params[:securityToken])
           return { status: 500, message: INVALID_SESSION } unless user
           return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
-          matches = UserMatch.includes(:match, :player).order(created_at: :desc).limit(20).map do |um|
+          matches = UserMatch.where(user_id: user.id).includes(:match, :player).order(created_at: :desc).limit(20).map do |um|
             { match: um.match, player: um.player }
           end
           { status: 200, message: MSG_SUCCESS, matches: matches }
