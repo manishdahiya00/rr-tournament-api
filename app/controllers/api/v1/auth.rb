@@ -73,7 +73,7 @@ module Api
               source_ip: user.source_ip || request.ip,
               version_name: params[:versionName],
               version_code: params[:versionCode],
-              refer_code: SecureRandom.hex(4),
+              refer_code: user.refer_code || SecureRandom.hex(4),
               referral_code: referral_user&.refer_code || nil,
             )
 
