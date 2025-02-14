@@ -60,7 +60,7 @@ module Api
           otp = SecureRandom.random_number(10 ** 6).to_s.rjust(6, "0")
           user = User.find_or_initialize_by(email: email)
 
-          return { status: 500, message: "Your account is banned. Please contact support." } if user.is_banned?
+          return { status: 401, message: "Your account is banned. Please contact support." } if user.is_banned?
 
           otp_response = send_otp(email, otp)
           return otp_response if otp_response[:status] != 200
@@ -132,7 +132,7 @@ module Api
         post do
           user = valid_user(params[:userId], params[:securityToken])
           return { status: 500, message: "Invalid Session" } unless user
-          return { status: 500, message: "You are banned. Please contact support." } if user.is_banned?
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
 
           begin
             app_config = AppConfig.first
