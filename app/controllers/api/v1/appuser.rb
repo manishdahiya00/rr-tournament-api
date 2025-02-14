@@ -7,7 +7,7 @@ module Api
         def fetch_user
           user = valid_user(params[:userId], params[:securityToken])
           return { status: 500, message: INVALID_SESSION } unless user
-          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned
+          return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
           user
         end
       end
