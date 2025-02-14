@@ -14,6 +14,8 @@ class CreateMatches < ActiveRecord::Migration[8.0]
       t.integer :total_slots
       t.integer :slots_left
       t.text :rules
+      t.string :room_id
+      t.string :room_pass
 
       t.timestamps
     end

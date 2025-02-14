@@ -73,7 +73,7 @@ module Api
           user = fetch_user
           match = Match.find_by(id: params[:matchId])
           return { status: 500, message: "Match not found" } if match.nil?
-          return { status: 500, message: "Already Joined the Team" } if Player.exists?(match_id: match.id, userId: user.id)
+          return { status: 500, message: "Already Joined the Team" } if Player.exists?(match_id: match.id, user_id: user.id)
           return { status: 500, message: "Insufficient Funds!" } if user.wallet_balance < match.entry_fee
 
           ActiveRecord::Base.transaction do
@@ -84,7 +84,7 @@ module Api
             user.update!(wallet_balance: user.wallet_balance - match.entry_fee)
             match.update!(slots_left: match.slots_left - 1)
 
-            player = match.players.create!(userId: user.id, name: params[:name], uid: params[:uid], username: params[:username], slot_no: available_slots.sample)
+            player = match.players.create!(user_id: user.id, name: params[:name], uid: params[:uid], username: params[:username], slot_no: available_slots.sample)
             user.user_matches.create!(match_id: match.id, player_id: player.id)
           end
 

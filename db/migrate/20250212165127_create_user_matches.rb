@@ -1,7 +1,7 @@
 class CreateUserMatches < ActiveRecord::Migration[8.0]
   def change
     create_table :user_matches, id: :uuid do |t|
-      t.string :userId
+      t.string :user_id
       t.string :match_id
       t.string :player_id
 

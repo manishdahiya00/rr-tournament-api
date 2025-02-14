@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_14_013939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -69,6 +69,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
     t.integer "total_slots"
     t.integer "slots_left"
     t.text "rules"
+    t.string "room_id"
+    t.string "room_pass"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -288,7 +290,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_12_165341) do
   end
 
   create_table "user_matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "userId"
+    t.string "user_id"
     t.string "match_id"
     t.string "player_id"
     t.datetime "created_at", null: false
