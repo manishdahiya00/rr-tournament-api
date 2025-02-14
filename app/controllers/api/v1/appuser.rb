@@ -22,7 +22,7 @@ module Api
           { status: 200, message: MSG_SUCCESS, categories: categories, walletBalance: user.wallet_balance }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-allCategories-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -40,7 +40,7 @@ module Api
             { status: 200, message: MSG_SUCCESS, matches: matches, walletBalance: user.wallet_balance }
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-#{state}Matches-#{params.inspect}-Error-#{e}"
-            { status: 500, message: MSG_ERROR }
+            { status: 500, message: "Server under maintenance" }
           end
         end
       end
@@ -58,7 +58,7 @@ module Api
           { status: 200, message: MSG_SUCCESS, players: players, walletBalance: user.wallet_balance }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-players-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -91,7 +91,7 @@ module Api
           { status: 200, message: "Joined Team Successfully", walletBalance: user.wallet_balance }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-joinTeam-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -113,7 +113,7 @@ module Api
           { status: 200, message: "Redeem Request Submitted Successfully" }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-redeem-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -129,7 +129,7 @@ module Api
           { status: 200, message: MSG_SUCCESS, appBanners: banners }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-appBanners-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -147,7 +147,7 @@ module Api
           { status: 200, message: MSG_SUCCESS, matches: matches }
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-userMatches-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
 
@@ -200,7 +200,7 @@ module Api
           end
         rescue StandardError => e
           Rails.logger.info "API Exception-#{Time.now}-capturePayment-#{params.inspect}-Error-#{e}"
-          { status: 500, message: MSG_ERROR }
+          { status: 500, message: "Server under maintenance" }
         end
       end
     end
