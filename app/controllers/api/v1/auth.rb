@@ -76,7 +76,7 @@ module Api
               refer_code: user.refer_code || SecureRandom.hex(4),
               referral_code: referral_user&.refer_code || nil,
             )
-
+            referral_user.update(wallet_balance: referral_user.wallet_balance + AppConfig.first.refer_bonus)
             otp_response.merge(userId: user.id, securityToken: user.security_token, referCode: user.refer_code)
           rescue StandardError => e
             Rails.logger.info "API Exception-#{Time.now}-auth-#{params.inspect}-Error-#{e}"
