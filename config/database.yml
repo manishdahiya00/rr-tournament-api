@@ -25,11 +25,8 @@ default: &default
   # port: 28716
   # database: defaultdb
   # url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
-  database: api_development
-  host: localhost
-  # port: 5432
-  username: root
-  password: 2009060944
+  database: main
+  url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/main?sslmode=require
 
 development:
   <<: *default
