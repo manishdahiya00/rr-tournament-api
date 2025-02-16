@@ -112,9 +112,9 @@ module Api
           user = valid_user(params[:userId], params[:securityToken])
           return { status: 500, message: INVALID_SESSION } unless user
           return { status: 401, message: "You are banned. Please contact support." } if user.is_banned?
-          return { status: 500, message: "Insufficient Funds!" } if user.wallet_balance < params[:amount]
+          return { status: 200, message: "Insufficient Funds!" } if user.wallet_balance < params[:amount]
 
-          return { status: 500, message: "Minimum Withrawl limit is ₹100" } if params[:amount] < 100
+          return { status: 200, message: "Minimum Withrawl limit is ₹100" } if params[:amount] < 100
 
           user.redeems.create!(amount: params[:amount], upi_id: params[:upiId], mobile_number: params[:mobileNumber])
           { status: 200, message: "Redeem Request Submitted Successfully" }
