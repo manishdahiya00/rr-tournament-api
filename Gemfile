@@ -58,7 +58,7 @@ end
 
 gem "grape", "~> 2.2"
 
-gem "motor-admin", "~> 0.4.34"
+gem "motor-admin", "~> 0.4.36"
 
 gem "devise", "~> 4.9"
 
