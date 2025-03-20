@@ -62,6 +62,6 @@ gem "motor-admin", "~> 0.4.34"
 
 gem "devise", "~> 4.9"
 
-gem "tailwindcss-rails", "~> 4.0"
+gem "tailwindcss-rails", "~> 4.2"
 
 gem "twilio-ruby", "~> 7.4"
