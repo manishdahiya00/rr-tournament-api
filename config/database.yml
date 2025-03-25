@@ -26,8 +26,7 @@ default: &default
   # database: defaultdb
   # url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/defaultdb?sslmode=require
   database: main
-  url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/main?sslmode=require
-
+  url: *****
 development:
   <<: *default
   database: api_development
@@ -94,19 +93,19 @@ production:
   primary: &primary_production
     <<: *default
     database: main
-    url: postgres://avnadmin:AVNS_LnITpexzlVwikK41buo@rr-tournament-manishdahiya0944-3d19.k.aivencloud.com:28716/main?sslmode=require
+    url: *****
   cache:
     <<: *primary_production
     database: main_cache
-    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_cache?sslmode=require
+    url: ***
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
     database: main_queue
-    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_queue?sslmode=require
+    url: ***
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
     database: main_cable
-    url: postgresql://neondb_owner:npg_RgBfOZ0C5Kma@ep-ancient-morning-a1zufcs9-pooler.ap-southeast-1.aws.neon.tech/main_cable?sslmode=require
+    url: ****
     migrations_paths: db/cable_migrate
